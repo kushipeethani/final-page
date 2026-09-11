@@ -1,3 +1,5 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 annotated-types>=0.7.0
 anyio>=4.0.0
 bcrypt>=4.1.0
