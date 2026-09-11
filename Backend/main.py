@@ -44,6 +44,17 @@ def startup_event():
     initialize_embedding_model()
 
 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "AI Recruitment Portal API is active"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
+
 # -------------------------
 # Auth Models & Endpoints
 # -------------------------

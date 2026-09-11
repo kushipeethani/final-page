@@ -1,12 +1,14 @@
 services:
+  # Backend Web Service
   - type: web
-    name: clyptus-backend
-    env: docker
-    dockerfilePath: ./Dockerfile
+    name: final-page-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn Backend.main:app --host 0.0.0.0 --port $PORT
     plan: free
     region: oregon
     branch: main
-    healthCheckPath: /
+    healthCheckPath: /health
     envVars:
       - key: PORT
         value: 8000
@@ -16,27 +18,27 @@ services:
         sync: false
       - key: DATABASE_URL
         fromDatabase:
-          name: clyptus-postgres
+          name: final-page-db
           property: connectionString
-      - key: FRONTEND_ORIGINS
-        value: https://clyptus-frontend.onrender.com
 
+  # Frontend Static Site (SPA)
   - type: static
-    name: clyptus-frontend
-    env: static
-    buildCommand: |
-      cd frontend && npm install && npm run build
+    name: final-page-frontend
+    buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     plan: free
     region: oregon
     branch: main
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://clyptus-backend.onrender.com
-
+        value: https://final-page-backend.onrender.com
 
 databases:
-  - name: clyptus-postgres
+  - name: final-page-db
     databaseName: recruitment_db
     user: clyptus_user
     plan: free
