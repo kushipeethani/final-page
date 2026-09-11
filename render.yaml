@@ -20,22 +20,6 @@ services:
           name: final-page-db
           property: connectionString
 
-  # Frontend Static Site (SPA)
-  - type: web
-    name: final-page-frontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
-    plan: free
-    branch: main
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: VITE_API_URL
-        value: https://final-page-backend.onrender.com
-
 databases:
   - name: final-page-db
     databaseName: recruitment_db
