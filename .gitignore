@@ -16,8 +16,7 @@ __pycache__/
 *.pyc
 recruitment.db
 *.db
-uploads/
-uploads/**
+uploads/resumes/
 node-dist/
 node.zip
 *.zip

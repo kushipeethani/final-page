@@ -29,27 +29,6 @@ app = FastAPI(
     title="AI Recruitment Portal API"
 )
 
-@app.get("/")
-def root():
-    return {
-        "status": "healthy",
-        "service": "Clyptus AI Recruitment API",
-        "version": "1.0.0"
-    }
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-frontend_origins = [
-    origin.strip()
-    for origin in os.getenv(
-        "FRONTEND_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173,https://kushi-176ae.web.app,https://kushi-176ae.firebaseapp.com,*"
-    ).split(",")
-    if origin.strip()
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -61,10 +40,8 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
-    try:
-        create_tables()
-    except Exception as e:
-        print(f"[Startup Warning] Could not initialize tables: {e}")
+    create_tables()
+    initialize_embedding_model()
 
 
 # -------------------------

@@ -1,5 +1,4 @@
 services:
-  # FastAPI AI Recruitment Backend
   - type: web
     name: clyptus-backend
     env: docker
@@ -19,9 +18,24 @@ services:
         fromDatabase:
           name: clyptus-postgres
           property: connectionString
+      - key: FRONTEND_ORIGINS
+        value: https://clyptus-frontend.onrender.com
+
+  - type: static
+    name: clyptus-frontend
+    env: static
+    buildCommand: |
+      cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    plan: free
+    region: oregon
+    branch: main
+    envVars:
+      - key: VITE_API_URL
+        value: https://clyptus-backend.onrender.com
+
 
 databases:
-  # Cloud Managed PostgreSQL Database
   - name: clyptus-postgres
     databaseName: recruitment_db
     user: clyptus_user

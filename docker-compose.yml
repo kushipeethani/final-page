@@ -1,68 +1,18 @@
 version: '3.8'
 
 services:
-  # 1. PostgreSQL Database Service
-  db:
+  postgres:
     image: postgres:16-alpine
-    container_name: clyptus-db
+    container_name: kushiai-postgres
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespassword}
-      POSTGRES_DB: ${POSTGRES_DB:-recruitment_db}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: recruitment_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-recruitment_db}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - clyptus-network
-
-  # 2. FastAPI Backend & AI Service
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: clyptus-backend
-    restart: always
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgrespassword}@db:5432/${POSTGRES_DB:-recruitment_db}
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-    ports:
-      - "8000:8000"
-    volumes:
-      - uploads_data:/app/uploads
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - clyptus-network
-
-  # 3. React Frontend UI Service
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
-    container_name: clyptus-frontend
-    restart: always
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
-    networks:
-      - clyptus-network
 
 volumes:
   postgres_data:
-  uploads_data:
-
-networks:
-  clyptus-network:
-    driver: bridge

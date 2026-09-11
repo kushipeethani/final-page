@@ -124,18 +124,15 @@ class PostgresConnectionWrapper:
 
 def get_db_connection():
     """
-    Returns a connection to PostgreSQL database if available,
+    Returns a connection to Docker PostgreSQL database if available,
     otherwise falls back gracefully to local SQLite.
     """
     if PSYCOPG2_AVAILABLE and DATABASE_URL:
         try:
-            pg_url = DATABASE_URL
-            if pg_url.startswith("postgres://"):
-                pg_url = pg_url.replace("postgres://", "postgresql://", 1)
-            raw_conn = psycopg2.connect(pg_url, connect_timeout=5)
+            raw_conn = psycopg2.connect(DATABASE_URL)
             return PostgresConnectionWrapper(raw_conn)
-        except Exception as e:
-            print(f"[Database Notice] PostgreSQL connection notice: {e}. Falling back to SQLite.")
+        except Exception:
+            pass
 
     # Fallback to SQLite
     connection = sqlite3.connect(SQLITE_DB_NAME)

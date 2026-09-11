@@ -35,6 +35,18 @@ export const getApiErrorMessage = (error: unknown, fallback: string) => {
   if (axios.isAxiosError(error)) {
     const detail = error.response?.data?.detail;
     if (typeof detail === 'string') return detail;
+    if (Array.isArray(detail) && detail.length > 0) {
+      return detail.map((d: any) => d.msg || JSON.stringify(d)).join(', ');
+    }
+    const message = error.response?.data?.message;
+    if (typeof message === 'string') return message;
+
+    if (error.code === 'ERR_NETWORK' || !error.response) {
+      return `Unable to connect to backend server (${API_URL}). Please ensure the backend is running.`;
+    }
+  } else if (error instanceof Error) {
+    return error.message;
   }
   return fallback;
 };
+
