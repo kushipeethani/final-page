@@ -27,7 +27,6 @@ services:
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     plan: free
-    region: oregon
     branch: main
     routes:
       - type: rewrite
