@@ -22,8 +22,9 @@ services:
           property: connectionString
 
   # Frontend Static Site (SPA)
-  - type: static_site
+  - type: web
     name: final-page-frontend
+    env: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     plan: free
