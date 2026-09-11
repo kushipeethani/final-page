@@ -1,10 +1,9 @@
 services:
-  # Backend Web Service
+  # Backend Web Service (Docker)
   - type: web
     name: final-page-backend
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn Backend.main:app --host 0.0.0.0 --port $PORT
+    env: docker
+    dockerfilePath: ./Dockerfile
     plan: free
     region: oregon
     branch: main
